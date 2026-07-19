@@ -23,6 +23,27 @@ export default function LandingPage() {
   const { t, language } = useLanguage();
   const { user } = useAuth();
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    // Smooth 3D tilt effect: max 8 degrees rotation
+    const rotateY = ((x - centerX) / centerX) * 8;
+    const rotateX = -((y - centerY) / centerY) * 8;
+    
+    setTilt({ x: rotateX, y: rotateY });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
 
   const stats = [
     { value: '14,820+', label: 'Issues Resolved' },
@@ -133,13 +154,25 @@ export default function LandingPage() {
         </div>
 
         {/* HERO VISUAL SIMULATION */}
-        <div className="mt-16 w-full max-w-4xl rounded-2xl border border-card-border bg-card/30 backdrop-blur-md p-2 shadow-2xl relative overflow-hidden group">
+        <div 
+          onMouseMove={handleMouseMove}
+          onMouseLeave={handleMouseLeave}
+          style={{
+            transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+            transition: tilt.x === 0 && tilt.y === 0 ? 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)' : 'transform 0.1s ease-out',
+            transformStyle: 'preserve-3d'
+          }}
+          className="mt-16 w-full max-w-4xl rounded-2xl border border-card-border bg-card/30 backdrop-blur-md p-2 shadow-2xl relative overflow-hidden group select-none"
+        >
           <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/5 opacity-50 pointer-events-none rounded-2xl"></div>
           <div className="rounded-xl border border-card-border/80 bg-card overflow-hidden shadow-inner">
             <img 
               src="/hero-bg.png" 
               alt="CityPulse AI Dashboard Preview" 
-              className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.02]"
+              className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.01]"
+              style={{
+                transform: 'translateZ(20px)' // Pops the image forward inside the 3D space
+              }}
             />
           </div>
         </div>
