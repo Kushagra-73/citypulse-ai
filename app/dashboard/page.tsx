@@ -8,6 +8,7 @@ import { useLanguage } from '@/contexts/LanguageContext';
 import { getReports, toggleLike, getUsers } from '@/services/firestore';
 import { CivicReport, UserProfile } from '@/types';
 import StatisticsCard from '@/components/dashboard/StatisticsCard';
+import toast from 'react-hot-toast';
 
 import { 
   FileText, 
@@ -125,7 +126,10 @@ export default function DashboardPage() {
   }, []);
 
   const handleUpvote = async (reportId: string) => {
-    if (!user) return;
+    if (!user) {
+      toast.error('Please log in to upvote reports!');
+      return;
+    }
     const updatedLikes = await toggleLike(reportId, user.uid);
     
     // Update local state to trigger rerender

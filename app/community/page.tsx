@@ -96,7 +96,10 @@ export default function CommunityPage() {
 
   const handleUpvote = async (reportId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) return;
+    if (!user) {
+      toast.error(language === 'hi' ? 'वोट करने के लिए कृपया लॉग इन करें!' : 'Please log in to upvote reports!');
+      return;
+    }
     const updatedLikes = await toggleLike(reportId, user.uid);
     setReports(prev => prev.map(r => r.id === reportId ? { ...r, likes: updatedLikes } : r));
     updatePointsAndTrust(2, 0); // +2 Points for voting
@@ -104,7 +107,10 @@ export default function CommunityPage() {
 
   const handleSupport = async (reportId: string, e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!user) return;
+    if (!user) {
+      toast.error(language === 'hi' ? 'शिकायत में शामिल होने के लिए कृपया लॉग इन करें!' : 'Please log in to join this complaint!');
+      return;
+    }
     const updatedSupports = await toggleSupport(reportId, user.uid);
     setReports(prev => prev.map(r => r.id === reportId ? { ...r, supports: updatedSupports } : r));
     updatePointsAndTrust(5, 0.5); // +5 Points for joining/backing complaints
