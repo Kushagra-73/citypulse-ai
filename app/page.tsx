@@ -179,7 +179,7 @@ export default function LandingPage() {
             <img 
               src="/hero-bg-dark.jpg" 
               alt="CityPulse AI Dashboard Preview" 
-              className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.01] hidden dark:block"
+              className="w-full h-auto object-cover opacity-60 brightness-50 transition-transform duration-700 group-hover:scale-[1.01] hidden dark:block"
               style={{
                 transform: 'translateZ(20px)' // Pops the image forward inside the 3D space
               }}
