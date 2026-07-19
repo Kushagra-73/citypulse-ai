@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "leaflet/dist/leaflet.css";
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  
+  --card: rgba(255, 255, 255, 0.45);
+  --card-foreground: #0f172a;
+  --card-border: rgba(226, 232, 240, 0.6);
+  
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+  
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  
+  --muted: #64748b;
+  --muted-foreground: #94a3b8;
+  
+  --border: #e2e8f0;
+  --input: rgba(241, 245, 249, 0.5);
+  --ring: #4f46e5;
+  
+  --glass-bg: rgba(255, 255, 255, 0.45);
+  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass-shadow: 0 8px 32px 0 rgba(148, 163, 184, 0.05);
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #f4f4f5;
+  
+  --card: rgba(18, 18, 22, 0.6);
+  --card-foreground: #f4f4f5;
+  --card-border: rgba(255, 255, 255, 0.08);
+  
+  --primary: #6366f1;
+  --primary-foreground: #ffffff;
+  
+  --accent: #10b981;
+  --accent-foreground: #ffffff;
+  
+  --muted: #a1a1aa;
+  --muted-foreground: #52525b;
+  
+  --border: rgba(39, 39, 42, 0.4);
+  --input: rgba(32, 32, 35, 0.5);
+  --ring: #6366f1;
+  
+  --glass-bg: rgba(9, 9, 11, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-card-border: var(--card-border);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --font-sans: 'Inter', 'Plus Jakarta Sans', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glassmorphism Styles */
+[class*="bg-card"],
+.glass-panel,
+.glass-card {
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+}
+
+.glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+/* Glass Blurred Popover Plate */
+.popover-card {
+  background: rgba(255, 255, 255, 0.94) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.12), var(--glass-shadow) !important;
+}
+
+.dark .popover-card {
+  background: rgba(15, 15, 18, 0.96) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5), var(--glass-shadow) !important;
+}
+
+/* Glow Background Effects */
+.glow-effect {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.15;
+}
+
+.glow-primary {
+  background-color: var(--primary);
+}
+
+.glow-accent {
+  background-color: var(--accent);
+}
+
+/* Custom Scrollbar & Interactive Expand Thumb */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary);
+  border: 0px solid transparent;
+}
+
+/* Leaflet Dark Mode Map Customization */
+.dark .leaflet-tile {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+.leaflet-container {
+  font-family: inherit !important;
+  border-radius: 0.75rem;
+  z-index: 1;
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 0.75rem !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.leaflet-popup-tip {
+  background: var(--card) !important;
+  border: 1px solid var(--card-border) !important;
+}
+
+.leaflet-bar {
+  border: 1px solid var(--card-border) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: var(--glass-shadow) !important;
+}
+
+.leaflet-bar a {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  border-bottom: 1px solid var(--card-border) !important;
+}
+
+.leaflet-bar a:hover {
+  background-color: var(--input) !important;
+}
+
+/* Pulse animation for AI nodes */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2s infinite ease-in-out;
+}
+
+/* Aurora Background Floating Animations */
+@keyframes auroraFloat {
+  0% {
+    transform: translate(0px, 0px) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(3vw, 5vh) scale(1.15) rotate(120deg);
+  }
+  66% {
+    transform: translate(-3vw, 10vh) scale(0.85) rotate(240deg);
+  }
+  100% {
+    transform: translate(0px, 0px) scale(1) rotate(360deg);
+  }
+}
+
+.animate-aurora-slow {
+  animation: auroraFloat 35s infinite ease-in-out;
+}
+
+.animate-aurora-medium {
+  animation: auroraFloat 25s infinite ease-in-out alternate;
+}
+
+.animate-aurora-fast {
+  animation: auroraFloat 18s infinite ease-in-out;
+}
+
+/* Dynamic motion text animation (black and light grey shimmer) */
+@keyframes textShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-motion-text {
+  background: linear-gradient(
+    90deg,
+    #09090b 0%,
+    #27272a 25%,
+    #52525b 50%,
+    #27272a 75%,
+    #09090b 100%
+  );
+  background-size: 200% auto;
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: textShimmer 4s linear infinite;
+  display: inline-block;
+}
+
+.dark .animate-motion-text {
+  background: linear-gradient(
+    90deg,
+    #ffffff 0%,
+    #d4d4d8 25%,
+    #71717a 50%,
+    #d4d4d8 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  color: transparent !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  animation: textShimmer 4s linear infinite;
+  display: inline-block;
+}
