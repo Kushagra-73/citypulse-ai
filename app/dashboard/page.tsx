@@ -5,8 +5,8 @@ import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { getReports, toggleLike } from '@/services/firestore';
-import { CivicReport } from '@/types';
+import { getReports, toggleLike, getUsers } from '@/services/firestore';
+import { CivicReport, UserProfile } from '@/types';
 import StatisticsCard from '@/components/dashboard/StatisticsCard';
 
 import { 
@@ -48,42 +48,79 @@ export default function DashboardPage() {
   const { user, updatePointsAndTrust } = useAuth();
   const { t } = useLanguage();
   const [reports, setReports] = useState<CivicReport[]>([]);
+  const [leaderboard, setLeaderboard] = useState<UserProfile[]>([]);
   const [mapCenter, setMapCenter] = useState({ lat: 12.9716, lng: 77.5946 });
 
-  // Weekly reports mock data
-  const activityData = [
-    { day: 'Mon', reports: 4 },
-    { day: 'Tue', reports: 7 },
-    { day: 'Wed', reports: 5 },
-    { day: 'Thu', reports: 12 },
-    { day: 'Fri', reports: 9 },
-    { day: 'Sat', reports: 15 },
-    { day: 'Sun', reports: 8 },
+  // Calculate dynamic weekly activity based on actual reports in database
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const activityMap: Record<string, number> = { Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0, Sun: 0 };
+  
+  reports.forEach(r => {
+    try {
+      const date = new Date(r.createdAt);
+      const dayIndex = date.getDay(); // 0 is Sunday, 1 is Monday, etc.
+      const dayName = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dayIndex];
+      activityMap[dayName] = (activityMap[dayName] || 0) + 1;
+    } catch (e) {
+      // Ignore parse errors
+    }
+  });
+
+  const hasReports = reports.length > 0;
+
+  const activityData = hasReports
+    ? daysOfWeek.map(day => ({ day, reports: activityMap[day] || 0 }))
+    : [
+        { day: 'Mon', reports: 4 },
+        { day: 'Tue', reports: 7 },
+        { day: 'Wed', reports: 5 },
+        { day: 'Thu', reports: 12 },
+        { day: 'Fri', reports: 9 },
+        { day: 'Sat', reports: 15 },
+        { day: 'Sun', reports: 8 },
+      ];
+
+  // Calculate dynamic categories distribution percentages based on actual reports
+  const categoriesList = [
+    { key: 'Road Damage', label: 'Road Damage', color: '#6366f1' },
+    { key: 'Garbage', label: 'Garbage', color: '#10b981' },
+    { key: 'Water Leakage', label: 'Water Leakage', color: '#3b82f6' },
+    { key: 'Broken Streetlight', label: 'Broken Streetlight', color: '#f59e0b' },
+    { key: 'Other', label: 'Other', color: '#ec4899' },
   ];
 
-  // Pie chart categories distribution mock
-  const categoryData = [
-    { name: 'Road Damage', value: 35, color: '#6366f1' },
-    { name: 'Garbage', value: 25, color: '#10b981' },
-    { name: 'Water Leakage', value: 20, color: '#3b82f6' },
-    { name: 'Broken Streetlight', value: 15, color: '#f59e0b' },
-    { name: 'Other', value: 5, color: '#ec4899' },
-  ];
+  const categoryCounts: Record<string, number> = {};
+  reports.forEach(r => {
+    const cat = r.category || 'Other';
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+  });
 
-  // Leaderboard mock data
-  const leaderboard = [
-    { name: 'Priya Patel', points: 340, trust: 92, photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150' },
-    { name: 'Arjun Sharma', points: 240, trust: 85, photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150' },
-    { name: 'Rohan Gupta', points: 195, trust: 88, photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150' },
-  ];
+  const totalReportsCount = reports.length || 1;
+  
+  const categoryData = hasReports
+    ? categoriesList.map(c => ({
+        name: c.label,
+        value: Math.round(((categoryCounts[c.key] || 0) / totalReportsCount) * 100) || 1,
+        color: c.color
+      }))
+    : [
+        { name: 'Road Damage', value: 35, color: '#6366f1' },
+        { name: 'Garbage', value: 25, color: '#10b981' },
+        { name: 'Water Leakage', value: 20, color: '#3b82f6' },
+        { name: 'Broken Streetlight', value: 15, color: '#f59e0b' },
+        { name: 'Other', value: 5, color: '#ec4899' },
+      ];
 
   useEffect(() => {
     getReports().then(data => {
       setReports(data);
-      // Center map on the first issue location if available
       if (data.length > 0) {
         setMapCenter({ lat: data[0].latitude, lng: data[0].longitude });
       }
+    });
+
+    getUsers().then(data => {
+      setLeaderboard(data);
     });
   }, []);
 
@@ -226,10 +263,10 @@ export default function DashboardPage() {
                     <img src={item.photo} alt={item.name} className="h-8 w-8 rounded-full object-cover" />
                     <div>
                       <div className="font-bold text-xs">{item.name}</div>
-                      <div className="text-[9px] text-muted">{t('trustScore')}: {item.trust}%</div>
+                      <div className="text-[9px] text-muted">{t('trustScore')}: {item.trustScore}%</div>
                     </div>
                   </div>
-                  <div className="text-xs font-black text-primary">{item.points} pts</div>
+                  <div className="text-xs font-black text-primary">{item.rewardPoints} pts</div>
                 </div>
               ))}
             </div>

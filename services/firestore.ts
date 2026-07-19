@@ -14,7 +14,7 @@ import {
   addDoc
 } from 'firebase/firestore';
 import { db, isFirebaseConfigured } from '@/firebase/config';
-import { CivicReport, Comment, Notification, RewardItem } from '@/types';
+import { CivicReport, Comment, Notification, RewardItem, UserProfile } from '@/types';
 import toast from 'react-hot-toast';
 
 // Storage Keys for Mock Mode
@@ -534,4 +534,40 @@ export async function redeemReward(userId: string, rewardId: string): Promise<st
   );
 
   return redeemedCode;
+}
+
+// 7. USER ACCESS (LEADERBOARD)
+export async function getUsers(): Promise<UserProfile[]> {
+  const mockContributors: UserProfile[] = [
+    { uid: 'user_priya', name: 'Priya Patel', rewardPoints: 340, trustScore: 92, photo: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150', email: 'priya@citypulse.ai', joinedDate: new Date().toISOString(), reportsCount: 5, badges: ['First Step'] },
+    { uid: 'user_arjun', name: 'Arjun Sharma', rewardPoints: 240, trustScore: 85, photo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150', email: 'arjun@citypulse.ai', joinedDate: new Date().toISOString(), reportsCount: 4, badges: ['First Step'] },
+    { uid: 'user_rohan', name: 'Rohan Gupta', rewardPoints: 195, trustScore: 88, photo: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150', email: 'rohan@citypulse.ai', joinedDate: new Date().toISOString(), reportsCount: 3, badges: ['First Step'] },
+  ];
+
+  if (!isFirebaseConfigured || !db) {
+    return mockContributors;
+  }
+
+  try {
+    const q = query(collection(db!, 'users'), orderBy('rewardPoints', 'desc'), limit(10));
+    const snap = await getDocs(q);
+    if (snap.empty) return mockContributors;
+    const users = snap.docs.map(doc => ({ uid: doc.id, ...doc.data() } as UserProfile));
+    
+    // Merge mock contributors if there are very few registered users for presentation
+    if (users.length < 3) {
+      const merged = [...users];
+      mockContributors.forEach(c => {
+        if (!merged.find(u => u.uid === c.uid || u.email === c.email)) {
+          merged.push(c);
+        }
+      });
+      return merged.sort((a, b) => b.rewardPoints - a.rewardPoints);
+    }
+
+    return users;
+  } catch (error) {
+    console.error('Firestore getUsers failed:', error);
+    return mockContributors;
+  }
 }
