@@ -217,11 +217,11 @@ export default function AuthPage() {
                 <span className="relative bg-card px-3 text-[10px] text-muted uppercase tracking-wider">Or continue with</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="w-full">
                 <button
                   onClick={handleGoogleLogin}
                   disabled={loading}
-                  className="h-10 border border-card-border hover:bg-input rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 transition-all cursor-pointer bg-card/40"
+                  className="w-full h-10 border border-card-border hover:bg-input rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-2 transition-all cursor-pointer bg-card/40"
                 >
                   <svg className="h-4 w-4" viewBox="0 0 24 24">
                     <path
@@ -242,15 +242,6 @@ export default function AuthPage() {
                     />
                   </svg>
                   <span>Google</span>
-                </button>
-
-                <button
-                  onClick={handleGuestLogin}
-                  disabled={loading}
-                  className="h-10 border border-card-border hover:bg-input rounded-xl text-xs font-semibold text-foreground flex items-center justify-center gap-1.5 transition-all cursor-pointer bg-card/40"
-                >
-                  <Sparkles className="h-4 w-4 text-primary" />
-                  <span>{t('guestMode')}</span>
                 </button>
               </div>
 
