@@ -256,19 +256,25 @@ export default function DashboardPage() {
               <h3 className="font-bold text-sm">{t('topContributors')}</h3>
             </div>
             <div className="space-y-3">
-              {leaderboard.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between border-b border-card-border/40 pb-2 last:border-0 last:pb-0">
-                  <div className="flex items-center gap-3">
-                    <div className="font-extrabold text-xs text-muted w-4">#{idx + 1}</div>
-                    <img src={item.photo} alt={item.name} className="h-8 w-8 rounded-full object-cover" />
-                    <div>
-                      <div className="font-bold text-xs">{item.name}</div>
-                      <div className="text-[9px] text-muted">{t('trustScore')}: {item.trustScore}%</div>
-                    </div>
-                  </div>
-                  <div className="text-xs font-black text-primary">{item.rewardPoints} pts</div>
+              {leaderboard.length === 0 ? (
+                <div className="text-center py-6 text-xs text-muted-foreground">
+                  No contributors registered yet.
                 </div>
-              ))}
+              ) : (
+                leaderboard.map((item, idx) => (
+                  <div key={idx} className="flex items-center justify-between border-b border-card-border/40 pb-2 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-3">
+                      <div className="font-extrabold text-xs text-muted w-4">#{idx + 1}</div>
+                      <img src={item.photo} alt={item.name} className="h-8 w-8 rounded-full object-cover" />
+                      <div>
+                        <div className="font-bold text-xs">{item.name}</div>
+                        <div className="text-[9px] text-muted">{t('trustScore')}: {item.trustScore}%</div>
+                      </div>
+                    </div>
+                    <div className="text-xs font-black text-primary">{item.rewardPoints} pts</div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 
