@@ -312,8 +312,9 @@ export async function toggleLike(reportId: string, userId: string): Promise<stri
       await updateDoc(ref, { likes: arrayUnion(userId) });
       return [...likes, userId];
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Firestore toggleLike failed:', error);
+    toast.error('Like failed: ' + (error?.message || error));
     return [];
   }
 }
@@ -369,8 +370,9 @@ export async function toggleSupport(reportId: string, userId: string): Promise<s
       }
       return [...supports, userId];
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Firestore toggleSupport failed:', error);
+    toast.error('Support failed: ' + (error?.message || error));
     return [];
   }
 }
@@ -430,8 +432,9 @@ export async function addComment(
     }
 
     return newComment;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Firestore addComment failed:', error);
+    toast.error('Comment failed: ' + (error?.message || error));
     return newComment;
   }
 }
