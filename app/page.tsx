@@ -137,7 +137,7 @@ export default function LandingPage() {
           <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/5 opacity-50 pointer-events-none rounded-2xl"></div>
           <div className="rounded-xl border border-card-border/80 bg-card overflow-hidden shadow-inner">
             <img 
-              src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&q=80&w=1200" 
+              src="/hero-bg.png" 
               alt="CityPulse AI Dashboard Preview" 
               className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.02]"
             />
