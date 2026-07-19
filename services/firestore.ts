@@ -212,15 +212,6 @@ export async function getReports(): Promise<CivicReport[]> {
   try {
     const q = query(collection(db!, 'reports'), orderBy('createdAt', 'desc'));
     const snap = await getDocs(q);
-    
-    if (snap.empty) {
-      // Auto-seed cloud database with default mock reports so they can be liked/commented on immediately!
-      for (const report of MOCK_SEED_REPORTS) {
-        await setDoc(doc(db!, 'reports', report.id), report);
-      }
-      return MOCK_SEED_REPORTS;
-    }
-    
     return snap.docs.map(doc => ({ id: doc.id, ...doc.data() } as CivicReport));
   } catch (error) {
     console.error('Firestore getReports failed, fallback to local database:', error);
