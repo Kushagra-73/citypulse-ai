@@ -166,20 +166,10 @@ export default function LandingPage() {
         >
           <div className="absolute inset-0 bg-gradient-to-tr from-primary/10 to-accent/5 opacity-50 pointer-events-none rounded-2xl"></div>
           <div className="rounded-xl border border-card-border/80 bg-card overflow-hidden shadow-inner">
-            {/* Light mode: abstract blue grid */}
             <img 
               src="/hero-bg.png" 
               alt="CityPulse AI Dashboard Preview" 
-              className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.01] block dark:hidden"
-              style={{
-                transform: 'translateZ(20px)' // Pops the image forward inside the 3D space
-              }}
-            />
-            {/* Dark mode: dark grey low-poly graphic */}
-            <img 
-              src="/hero-bg-dark.jpg" 
-              alt="CityPulse AI Dashboard Preview" 
-              className="w-full h-auto object-cover opacity-60 brightness-50 transition-transform duration-700 group-hover:scale-[1.01] hidden dark:block"
+              className="w-full h-auto object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.01]"
               style={{
                 transform: 'translateZ(20px)' // Pops the image forward inside the 3D space
               }}
